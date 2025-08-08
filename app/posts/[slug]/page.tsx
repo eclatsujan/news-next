@@ -9,11 +9,9 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
 import type { Metadata } from "next";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export const runtime = "edge";
-
-export const dynamic = 'force-static';
+export const revalidate = 21400; // 1 hour
 export const dynamicParams = true;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -69,7 +67,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       })
     : null;
   const category = post?.categories ? await getCategoryById(post.categories[0]) : null;
-  cacheTag(`article:${slug}`);
+
 
   return (
     <Section>
