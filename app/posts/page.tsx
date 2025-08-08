@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   description: "Browse all our blog posts",
 };
 
-export const dynamic = "edge";
+export const runtime = "edge";
 
 export default async function Page({
   searchParams,
