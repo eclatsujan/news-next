@@ -9,6 +9,7 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
 import type { Metadata } from "next";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export const runtime = "edge";
 
@@ -56,6 +57,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+     'use cache'; // tag the rendered HTML
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   const featuredMedia = post?.featured_media ? await getFeaturedMediaById(post.featured_media) : null;
@@ -68,6 +70,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       })
     : null;
   const category = post?.categories ? await getCategoryById(post.categories[0]) : null;
+  cacheTag(`article:${slug}`);
 
   return (
     <Section>
