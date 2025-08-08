@@ -57,7 +57,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-     'use cache'; // tag the rendered HTML
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   const featuredMedia = post?.featured_media ? await getFeaturedMediaById(post.featured_media) : null;
