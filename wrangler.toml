@@ -2,3 +2,7 @@ name = "news-app"
 pages_build_output_dir = "./dist"
 
 compatibility_flags = [ "nodejs_compat" ]
+
+[vars]
+WORDPRESS_HOSTNAME = "https://www.karobarpati.com"
+WORDPRESS_URL = "https://www.karobarpati.com"
