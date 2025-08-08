@@ -29,46 +29,28 @@ export const metadata: Metadata = {
   description: "Browse all our blog posts",
 };
 
-export const runtime = "edge";
+// Force static generation
+export const dynamic = "force-static";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    author?: string;
-    tag?: string;
-    category?: string;
-    page?: string;
-    search?: string;
-  }>;
-}) {
-  const params = await searchParams;
-  const { author, tag, category, page: pageParam, search } = params;
-
-  // Handle pagination
-  const page = pageParam ? parseInt(pageParam, 10) : 1;
+export default async function Page() {
+  // Static page - fetch default data without search parameters
+  const page = 1;
   const postsPerPage = 9;
 
-  // Fetch data based on search parameters using efficient pagination
+  // Fetch data for static generation - no filtering applied
   const [postsResponse, authors, tags, categories] = await Promise.all([
-    getPostsPaginated(page, postsPerPage, { author, tag, category, search }),
-    search ? searchAuthors(search) : getAllAuthors(),
-    search ? searchTags(search) : getAllTags(),
-    search ? searchCategories(search) : getAllCategories(),
+    getPostsPaginated(page, postsPerPage, {}),
+    getAllAuthors(),
+    getAllTags(),
+    getAllCategories(),
   ]);
 
   const { data: posts, headers } = postsResponse;
   const { total, totalPages } = headers;
 
-  // Create pagination URL helper
+  // Create pagination URL helper for static pages
   const createPaginationUrl = (newPage: number) => {
-    const params = new URLSearchParams();
-    if (newPage > 1) params.set("page", newPage.toString());
-    if (category) params.set("category", category);
-    if (author) params.set("author", author);
-    if (tag) params.set("tag", tag);
-    if (search) params.set("search", search);
-    return `/posts${params.toString() ? `?${params.toString()}` : ""}`;
+    return newPage > 1 ? `/posts?page=${newPage}` : "/posts";
   };
 
   return (
@@ -79,21 +61,13 @@ export default async function Page({
             <h2>All Posts</h2>
             <p className="text-muted-foreground">
               {total} {total === 1 ? "post" : "posts"} found
-              {search && " matching your search"}
             </p>
           </Prose>
 
           <div className="space-y-4">
-            <SearchInput defaultValue={search} />
+            <SearchInput />
 
-            <FilterPosts
-              authors={authors}
-              tags={tags}
-              categories={categories}
-              selectedAuthor={author}
-              selectedTag={tag}
-              selectedCategory={category}
-            />
+            <FilterPosts authors={authors} tags={tags} categories={categories} />
           </div>
 
           {posts.length > 0 ? (
