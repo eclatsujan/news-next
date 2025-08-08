@@ -28,6 +28,7 @@ export async function PostCard({ post }: { post: Post }) {
           {media?.source_url ? (
             <Image
               className="h-full w-full object-cover"
+              loading="eager"
               src={media.source_url}
               alt={post.title?.rendered || "Post thumbnail"}
               width={400}
