@@ -29,9 +29,6 @@ export const metadata: Metadata = {
   description: "Browse all our blog posts",
 };
 
-export const dynamic = "auto";
-export const revalidate = 600;
-
 export default async function Page({
   searchParams,
 }: {
@@ -115,32 +112,22 @@ export default async function Page({
                 <PaginationContent>
                   {page > 1 && (
                     <PaginationItem>
-                      <PaginationPrevious
-                        href={createPaginationUrl(page - 1)}
-                      />
+                      <PaginationPrevious href={createPaginationUrl(page - 1)} />
                     </PaginationItem>
                   )}
 
                   {Array.from({ length: totalPages }, (_, i) => i + 1)
                     .filter((pageNum) => {
                       // Show current page, first page, last page, and 2 pages around current
-                      return (
-                        pageNum === 1 ||
-                        pageNum === totalPages ||
-                        Math.abs(pageNum - page) <= 1
-                      );
+                      return pageNum === 1 || pageNum === totalPages || Math.abs(pageNum - page) <= 1;
                     })
                     .map((pageNum, index, array) => {
-                      const showEllipsis =
-                        index > 0 && pageNum - array[index - 1] > 1;
+                      const showEllipsis = index > 0 && pageNum - array[index - 1] > 1;
                       return (
                         <div key={pageNum} className="flex items-center">
                           {showEllipsis && <span className="px-2">...</span>}
                           <PaginationItem>
-                            <PaginationLink
-                              href={createPaginationUrl(pageNum)}
-                              isActive={pageNum === page}
-                            >
+                            <PaginationLink href={createPaginationUrl(pageNum)} isActive={pageNum === page}>
                               {pageNum}
                             </PaginationLink>
                           </PaginationItem>
