@@ -2,6 +2,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export const maxDuration = 30;
+export const runtime = "edge";
 
 /**
  * WordPress webhook handler for content revalidation
@@ -16,27 +17,17 @@ export async function POST(request: NextRequest) {
 
     if (secret !== process.env.WORDPRESS_WEBHOOK_SECRET) {
       console.error("Invalid webhook secret");
-      return NextResponse.json(
-        { message: "Invalid webhook secret" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Invalid webhook secret" }, { status: 401 });
     }
 
     const { contentType, contentId } = requestBody;
 
     if (!contentType) {
-      return NextResponse.json(
-        { message: "Missing content type" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Missing content type" }, { status: 400 });
     }
 
     try {
-      console.log(
-        `Revalidating content: ${contentType}${
-          contentId ? ` (ID: ${contentId})` : ""
-        }`
-      );
+      console.log(`Revalidating content: ${contentType}${contentId ? ` (ID: ${contentId})` : ""}`);
 
       // Revalidate specific content type tags
       revalidateTag("wordpress");
@@ -73,9 +64,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         revalidated: true,
-        message: `Revalidated ${contentType}${
-          contentId ? ` (ID: ${contentId})` : ""
-        } and related content`,
+        message: `Revalidated ${contentType}${contentId ? ` (ID: ${contentId})` : ""} and related content`,
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
