@@ -144,6 +144,9 @@ export async function getPostsPaginated(
     cacheTags.push(`posts-category-${filterParams.category}`);
   }
 
+  query.orderby = "date";
+  query.order = "desc";
+
   // Add page-specific cache tag for granular invalidation
   cacheTags.push(`posts-page-${page}`);
 
@@ -225,6 +228,12 @@ export async function getPostById(id: number): Promise<Post> {
 
 export async function getPostBySlug(slug: string): Promise<Post> {
   return wordpressFetch<Post[]>("/wp-json/wp/v2/posts", { slug },[`artice:${slug}`]).then(
+    (posts) => posts[0]
+  );
+}
+
+export async function getPostByLink(link: string): Promise<Post> {
+  return wordpressFetch<Post[]>("/wp-json/wp/v2/posts", { link },[`artice:${link}`]).then(
     (posts) => posts[0]
   );
 }

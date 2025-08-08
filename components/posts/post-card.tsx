@@ -18,7 +18,7 @@ export async function PostCard({ post }: { post: Post }) {
 
   return (
     <Link
-      href={`/posts/${post.slug}`}
+      href={`${post?.link.replace(process.env.WORDPRESS_URL ?? "", "")}`}
       className={cn(
         "border p-4 bg-accent/30 rounded-lg group flex justify-between flex-col not-prose gap-8",
         "hover:bg-accent/75 transition-all"
