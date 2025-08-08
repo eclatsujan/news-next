@@ -39,7 +39,8 @@ export interface WordPressResponse<T> {
 // Keep original function for backward compatibility
 async function wordpressFetch<T>(
   path: string,
-  query?: Record<string, any>
+  query?: Record<string, any>,
+  tags?: string[]
 ): Promise<T> {
   const url = `${baseUrl}${path}${
     query ? `?${querystring.stringify(query)}` : ""
@@ -51,7 +52,7 @@ async function wordpressFetch<T>(
       "User-Agent": userAgent,
     },
     next: {
-      tags: ["wordpress"],
+      tags : tags || ["wordpress"],
       revalidate: 3600, // 1 hour cache
     },
   });
@@ -223,7 +224,7 @@ export async function getPostById(id: number): Promise<Post> {
 }
 
 export async function getPostBySlug(slug: string): Promise<Post> {
-  return wordpressFetch<Post[]>("/wp-json/wp/v2/posts", { slug }).then(
+  return wordpressFetch<Post[]>("/wp-json/wp/v2/posts", { slug },[`artice:${slug}`]).then(
     (posts) => posts[0]
   );
 }
