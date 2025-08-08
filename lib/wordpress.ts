@@ -51,7 +51,6 @@ async function wordpressFetch<T>(
     headers: {
       "User-Agent": userAgent,
     },
-    cache: "force-cache", // Use cache for 1 hour
     next: {
       tags : tags || ["wordpress"],
       revalidate: 3600, // 1 hour cache
